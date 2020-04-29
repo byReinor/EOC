@@ -191,7 +191,7 @@ main:
         mov cl, ah
     endif1:
         
-    compareStrings string1 string2 ;compares the strings and store in althe number og equal characters and in ah the number o different characters  
+    compareStrings string1 string2 ;compares the strings and store in al the number of equal characters and in ah the number o different characters  
     
     print text2
     mov numberToPrint, al
