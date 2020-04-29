@@ -92,14 +92,67 @@ compareStrings macro str1, str2
         inc si
         inc di
         dec cl
-        jnz for2 
+    jnz for2 
     
 endm
 
 exit macro              ;exit the program
     mov ah, 4ch
     int 21h
-endm 
+endm
+
+printNumber macro number
+    ;save the registers that will be used
+    push ax
+    push bx
+    push dx
+    
+    ;clean the registers that will be used
+    xor ax, ax
+    xor bx, bx
+    xor dx, dx
+    
+    ;PRINT THE FIRST DIGIT
+    
+    ;divide the number by 100d (=64h)
+    mov al, number
+    mov bl, 64h
+    div bl
+    
+    ;print the quotient (first digit)
+    push ax
+    mov dl, al
+    add dl, '0'
+    mov ah, 2h
+    int 21h
+    pop ax
+    
+    ;move the remainder to al, and divide the remainder by (=0Ah)
+    mov al, ah
+    xor ah, ah
+    mov bl, 0Ah
+    div bl
+    
+    ;print the quotient (second digit)
+    push ax
+    mov dl, al
+    add dl, '0'
+    mov ah, 2h
+    int 21h
+    pop ax 
+    
+    ;print the remainder (third digit)
+    mov dl, ah
+    add dl, '0'
+    mov ah, 2h
+    int 21h
+    
+    ;recover the used registers
+    pop dx
+    pop bx
+    pop ax
+
+endm
         
 .data
     text DB 13, 10, "Input a string (max length 150): ", '$' 
@@ -108,25 +161,10 @@ endm
     
     string1 DB 151 dup('$') ;create an array with the '$' character duplicated 151 times
     string2 DB 151 dup('$') ;create an array with the '$' character duplicated 151 times 
-
-.code 
-
-printNumber proc
-    push bp
-    push sp
-    mov bp, sp
-    push ax
-    push bx
-       
-       
-       
-    pop bx
-    pop ax
-    pop sp
-    pop bp
     
-    ret 2
-printNumber endp
+    numberToPrint DB ? 
+    
+.code 
 
 main:  
     mov ax, @data
@@ -153,22 +191,15 @@ main:
         mov cl, ah
     endif1:
         
-    compareStrings string1 string2  
+    compareStrings string1 string2 ;compares the strings and store in althe number og equal characters and in ah the number o different characters  
     
     print text2
-    
-    mov dl, al
-    add dl, '0'
-    push ax
-    mov ah, 2h
-    int 21h
+    mov numberToPrint, al
+    printNumber numberToPrint
         
-    print text3 
-    pop ax
-    mov dl, ah 
-    add dl, '0'
-    mov ah, 2h
-    int 21h 
+    print text3
+    mov numberToprint, ah
+    printNumber numberToprint
     
     exit
 END main
