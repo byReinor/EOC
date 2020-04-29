@@ -1,11 +1,18 @@
 .model small
 .stack 100h 
 
-print macro text        ;print a text
+print macro text        ;print a text   
+    push ax
+    push dx
+    
     xor dx, dx
     lea dx, text
     mov ah, 9h
     int 21h
+    
+    pop dx
+    pop ax 
+    
 endm 
 
 readStrings macro str1, str2
@@ -85,9 +92,8 @@ compareStrings macro str1, str2
         inc si
         inc di
         dec cl
-        jnz for2
-        
-
+        jnz for2 
+    
 endm
 
 exit macro              ;exit the program
@@ -103,7 +109,25 @@ endm
     string1 DB 151 dup('$') ;create an array with the '$' character duplicated 151 times
     string2 DB 151 dup('$') ;create an array with the '$' character duplicated 151 times 
 
-.code
+.code 
+
+printNumber proc
+    push bp
+    push sp
+    mov bp, sp
+    push ax
+    push bx
+       
+       
+       
+    pop bx
+    pop ax
+    pop sp
+    pop bp
+    
+    ret 2
+printNumber endp
+
 main:  
     mov ax, @data
     mov ds, ax
@@ -129,7 +153,7 @@ main:
         mov cl, ah
     endif1:
         
-    compareStrings string1 string2
+    compareStrings string1 string2  
     
     print text2
     
@@ -138,13 +162,13 @@ main:
     push ax
     mov ah, 2h
     int 21h
-    
+        
+    print text3 
     pop ax
-    print text3
     mov dl, ah 
     add dl, '0'
     mov ah, 2h
-    int 21h
+    int 21h 
     
     exit
 END main
