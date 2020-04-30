@@ -35,8 +35,8 @@ readStrings macro str1, str2
         endwhile1:
         xor si, si
         lea si, str2
-        dec cl
-        jnz for1
+        dec cl              ;decrement the counter (cx) in 1
+        jnz for1            ;jump not zero, jumps when cx is not 0
 endm
 
 lengthStr1 macro str        ;stores in ah the length of a string
@@ -127,7 +127,8 @@ printNumber macro number
     int 21h
     pop ax
     
-    ;move the remainder to al, and divide the remainder by (=0Ah)
+    ;PRINT THE SECOND DIGIT
+    ;move the remainder to al, and divide the remainder by 10d (=0Ah)
     mov al, ah
     xor ah, ah
     mov bl, 0Ah
@@ -141,6 +142,7 @@ printNumber macro number
     int 21h
     pop ax 
     
+    ;PRINT THE THIRD DIGIT
     ;print the remainder (third digit)
     mov dl, ah
     add dl, '0'
@@ -179,9 +181,9 @@ main:
     lengthStr2 string2      ;store the length of string2 in al             
     
     
-    if1:
+    if1:     
         cmp ah, al
-        jg  string1IsLonger
+        jg  string1IsLonger  ;jump greater
     
         ;String2 is longer
         mov cl, al
@@ -195,7 +197,8 @@ main:
     
     print text2
     mov numberToPrint, al
-    printNumber numberToPrint
+    printNumber numberToPrint  
+    
         
     print text3
     mov numberToprint, ah

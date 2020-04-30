@@ -71,7 +71,7 @@ inicio:
         mov [bx], '0'
         jmp endif2
     else2:
-        mov [bx], '0'
+        mov [bx], '1'
     endif2:    
     
     ;copy the rest of the bits of input into varsm
